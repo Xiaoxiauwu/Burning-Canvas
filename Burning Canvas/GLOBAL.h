@@ -1,0 +1,33 @@
+#pragma once
+
+#include "ImGui/imconfig.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "ImGui/imgui_impl_win32.h"
+#include "ImGui/imgui_internal.h"
+#include "ImGui/imstb_rectpack.h"
+#include "ImGui/imstb_textedit.h"
+#include "ImGui/imstb_truetype.h"
+//#include "ImGui/improfx_control_base.h"
+
+#include <d3d11.h>
+#pragma comment(lib,"d3d11.lib")
+
+#include"Font.h"
+#include"Tool.h"
+#include"data.h"
+#include <tchar.h>
+#include <iostream>
+#include <filesystem>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <stack>
+using namespace std;
+
+#define IMVEC2_ADD2(p1, p2) ImVec2((p1).x + (p2).x, (p1).y + (p2).y)
+#define IMVEC2_SUB2(p1, p2) ImVec2((p1).x - (p2).x, (p1).y - (p2).y)
+#define IMVEC2_MUL1(p, v)   ImVec2((p).x * (v), (p).y * (v))
+#define IMVEC2_MUL2(p1, p2) ImVec2((p1).x * (p2).x, (p1).y * (p2).y)
+#define IMVEC4_CVT_COLU32(COLOR)      IM_COL32(ImU32((COLOR).x * 255.0f), ImU32((COLOR).y * 255.0f), ImU32((COLOR).z * 255.0f), ImU32((COLOR).w * 255.0f))
+
