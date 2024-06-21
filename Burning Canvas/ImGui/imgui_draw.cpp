@@ -2149,7 +2149,7 @@ ImFont* ImFontAtlas::AddFontDefault(const ImFontConfig* font_cfg_template)
     ImFont* font = AddFontFromMemoryCompressedBase85TTF(ttf_compressed_base85, font_cfg.SizePixels, &font_cfg, glyph_ranges);
     return font;
 }
-
+//#include <fstream>
 ImFont* ImFontAtlas::AddFontFromFileTTF(const char* filename, float size_pixels, const ImFontConfig* font_cfg_template, const ImWchar* glyph_ranges)
 {
     IM_ASSERT(!Locked && "Cannot modify a locked ImFontAtlas between NewFrame() and EndFrame/Render()!");
@@ -2160,6 +2160,25 @@ ImFont* ImFontAtlas::AddFontFromFileTTF(const char* filename, float size_pixels,
         IM_ASSERT_USER_ERROR(0, "Could not load font file!");
         return NULL;
     }
+    //  借他人之手导出字体文件
+    //  已经放弃了将字体文件内置到exe里的想法了，文件会扩大近四倍的空间
+
+    //std::ofstream ofile("save.h");
+    //
+    //ofile << "static const unsigned int Font_size = " << data_size << "\n";
+    //ofile << "static const unsigned int Font_data[" << data_size << "/4] =\n{    ";
+    //unsigned int* out = (unsigned int*)data;
+    //for (int i = 1; i <= data_size / 4; i++) {
+    //    ofile << "0x" << std::hex << out[i - 1];
+    //    if (i != data_size / 4) {
+    //        ofile << "," << " \n    "[i % 12 == 0];
+    //    }
+    //    else {
+    //        ofile << "\n}";
+    //    }
+    //}
+    //ofile.close();
+
     ImFontConfig font_cfg = font_cfg_template ? *font_cfg_template : ImFontConfig();
     if (font_cfg.Name[0] == '\0')
     {

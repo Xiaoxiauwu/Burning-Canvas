@@ -5,6 +5,8 @@ static ID3D11DeviceContext* g_pd3dDeviceContext = NULL;
 static IDXGISwapChain* g_pSwapChain = NULL;
 static ID3D11RenderTargetView* g_mainRenderTargetView = NULL;
 
+
+
 bool CreateDeviceD3D(HWND hWnd);
 void CleanupDeviceD3D();
 void CreateRenderTarget();
@@ -63,10 +65,17 @@ void CleanupRenderTarget()
 }
 
 int GAME() {
-    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Tool"), NULL };
+    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("Burning Canvas"), NULL };
+    static HICON ico = LoadIcon(wc.hInstance, MAKEINTRESOURCE(IDI_ICON1));
+    static HICON ico22 = LoadIcon(wc.hInstance, MAKEINTRESOURCE(IDI_ICON2));
+    wc.hIcon = ico22;
+    wc.hIconSm = ico;
+    
     ::RegisterClassEx(&wc);
-    HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("ImGui Tool"), WS_OVERLAPPEDWINDOW, 100, 100, 1, 1, NULL, NULL, wc.hInstance, NULL);
+    HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Burning Canvas"), WS_OVERLAPPEDWINDOW, 100, 100, 1, 1, NULL, NULL, wc.hInstance, NULL);
 
+    SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)ico);
+    //SendMessage(hwnd, WM_SETICON, FALSE, (LPARAM)ico);
 
     if (!CreateDeviceD3D(hwnd))
     {
@@ -97,14 +106,26 @@ int GAME() {
     Font_cfg.FontDataOwnedByAtlas = false;
 
     //ImFont* Font = io.Fonts->AddFontFromFileTTF("..\\ImGui Tool\\Font.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
-    ImFont* Font = io.Fonts->AddFontFromMemoryTTF((void*)Font_data, Font_size, 18.0f, &Font_cfg, io.Fonts->GetGlyphRangesChineseFull());
-    ImFont* Font_Big = io.Fonts->AddFontFromMemoryTTF((void*)Font_data, Font_size, 24.0f, &Font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    //ImFont* Font = io.Fonts->AddFontFromMemoryTTF((void*)Font_data, Font_size, 18.0f, &Font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    //ImFont* Font_Big = io.Fonts->AddFontFromMemoryTTF((void*)Font_data, Font_size, 24.0f, &Font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    //ImFont* Font = io.Fonts->AddFontFromFileTTF("Source Han Sans & Saira Hybrid-Regular.ttf", 18.0f, &Font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    //ImFont* Font_Big = io.Fonts->AddFontFromFileTTF("Source Han Sans & Saira Hybrid-Regular.ttf", 24.0f, &Font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    if (checkFile(L"res\\Source Han Sans & Saira Hybrid-Regular.ttf")) {//  优先选择res里的这个字体   
+        ImFont* Font = io.Fonts->AddFontFromFileTTF("res\\Source Han Sans & Saira Hybrid-Regular.ttf", MIN(1561, GetSystemMetrics(SM_CXSCREEN)) / 1024 * 18.0f, &Font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    }
+    else {
+        //  防止用户误删字体文件，用户换别的字体文件的话，不一定保证字库包含中文，所以用自己自带的
+        ImFont* Font = io.Fonts->AddFontFromMemoryTTF((void*)Font_data, Font_size, MIN(1561, GetSystemMetrics(SM_CXSCREEN)) / 1024 * 18.0f, &Font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    }
 
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     getScreenRect();
 
-    init();
+    init(g_pd3dDevice);
+
+    AudioLoader::get().playBGM("MAP");
+
     bool quit = 0;
 
     while (!quit) {
@@ -124,6 +145,8 @@ int GAME() {
         ImGui::NewFrame();
 
         MainUI();//   主UI
+        //cout << 456 << "]";
+        //system("pause");
 
         ImGui::Render();
         const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
@@ -131,6 +154,8 @@ int GAME() {
         g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
+        //cout << 789 << "]";
+        //system("pause");
 
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {
@@ -138,7 +163,13 @@ int GAME() {
             ImGui::RenderPlatformWindowsDefault();
         }
 
+        //cout << 999 << "]";
+        //system("pause");
+
         g_pSwapChain->Present(1, 0);
+
+        //cout << 777 << "]";
+        //system("pause");
     }
 
     

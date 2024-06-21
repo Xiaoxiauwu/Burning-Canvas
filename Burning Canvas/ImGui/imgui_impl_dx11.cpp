@@ -309,6 +309,7 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
     ctx->IASetInputLayout(old.InputLayout); if (old.InputLayout) old.InputLayout->Release();
 }
 
+//#include<iostream>
 static void ImGui_ImplDX11_CreateFontsTexture()
 {
     // Build texture atlas
@@ -317,6 +318,7 @@ static void ImGui_ImplDX11_CreateFontsTexture()
     unsigned char* pixels;
     int width, height;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+    //std::cout << width << " " << height;
 
     // Upload texture to graphics system
     {
@@ -338,7 +340,9 @@ static void ImGui_ImplDX11_CreateFontsTexture()
         subResource.SysMemPitch = desc.Width * 4;
         subResource.SysMemSlicePitch = 0;
         bd->pd3dDevice->CreateTexture2D(&desc, &subResource, &pTexture);
+        //std::cout << (pTexture == nullptr);
         IM_ASSERT(pTexture != NULL);
+        //system("pause");
 
         // Create texture view
         D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
@@ -348,6 +352,7 @@ static void ImGui_ImplDX11_CreateFontsTexture()
         srvDesc.Texture2D.MipLevels = desc.MipLevels;
         srvDesc.Texture2D.MostDetailedMip = 0;
         bd->pd3dDevice->CreateShaderResourceView(pTexture, &srvDesc, &bd->pFontTextureView);
+        //if(pTexture!=nullptr)
         pTexture->Release();
     }
 

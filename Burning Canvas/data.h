@@ -1,6 +1,10 @@
 #pragma once
 #include"GLOBAL.h"
-#include<string>
+
+
+#include"Tool.h"
+//#include<string>
+class Map;
 
 enum HintState {
 	NONE,
@@ -14,17 +18,21 @@ enum HintState {
 class Map {
 public:
 	Map();
-	Map(std::wstring name);
+	Map(std::string name);
 	Map(const Map* mp);
 	~Map();
-	void load(std::wstring name);
-	std::string getName();
+	void load(std::string name);
+	void loadDefault();
+	std::string& getName();
+	int getID();
 	void getSize(int& x, int& y);
 	ImVec4 getColors(int x, int y);
 	ImVec4 getGoalColors(int x, int y);
 	int getColors_index(int x, int y);
+	int getGoalColors_index(int x, int y);
 	int getNumbers(int x, int y);
 	int getward();
+	int getGoalward();
 	void setColors(int x, int y, int c);
 	void setNumbers(int x, int y, int n);
 	void clockwise();
@@ -33,11 +41,15 @@ public:
 	HintState Hint();
 	bool Submit();
 	void operationInsert(char move);
-private:
+	std::string ans,now;//DEBUG 等会记得放回去
+//
 	//Map* last_status;
-	std::string ans,now;
+	bool isEditing = 0;//	正在被编辑
+//protected:	//	全都公开
 	int ward = 0;//0 ~ 3
+	int goalward = 0;
 	std::string name;
+	int ID;
 	int w, h;
 	int colorCnt;
 	ImVec4* palette;
@@ -51,15 +63,22 @@ public:
 	MapDisplay();
 	MapDisplay(Map* mp);
 	void setCenter(int x, int y);
-	void setSize(int sz);
+	void setSize(float sz);
 	int getSize();
 	void setMap(Map* _map);
-	void display();
+	void display(bool nonumber = 0);
 	void displayFinish();
+	void showUnitBoard(int x, int y);
+	void showUnitColor(int x, int y, ImVec4 color);
+	bool isShowGrid();
+	void setShowGrid(bool v);
+	void setGridColor(ImVec4 color);
 	~MapDisplay();
 	Map* myMap;
 private:
 	int cx, cy;
-	int size;
+	float size;
 	bool nonumber;
+	bool showGrid = 0;
+	ImVec4 gridColor = ImVec4(0.5, 0.5, 0.5, 1);
 };
